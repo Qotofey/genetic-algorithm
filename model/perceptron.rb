@@ -53,7 +53,7 @@ class Perceptron
   end
 
   def foreach_all_neurons layer, errors
-    gradients = Mapper::derivative_activation layer.outputs
+    gradients = Mapper::derivative_bipolar layer.outputs
     delta_wights = Matrix.combine(errors, gradients) { |a, b| a * b }
     layer.weights -= (delta_wights.t * layer.inputs * 0.05).t
     return delta_wights * layer.weights.t

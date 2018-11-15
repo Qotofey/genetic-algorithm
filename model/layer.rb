@@ -12,7 +12,7 @@ class Layer
 
   def predict inputs
     @inputs = inputs
-    @outputs = Mapper::activation(@inputs * @weights)
+    @outputs = Mapper::bipolar(@inputs * @weights)
   end
 
   def print_to_console
