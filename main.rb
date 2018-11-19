@@ -125,18 +125,8 @@ puts perceptron.predict_error sample_list[9]
 
 # обучаем персептрон
 puts "*** Тренировка ***"
-for i in (0..1000)
-  perceptron.train sample_list[0].inputs, sample_list[0].expected
-  perceptron.train sample_list[1].inputs, sample_list[1].expected
-  perceptron.train sample_list[2].inputs, sample_list[2].expected
-  perceptron.train sample_list[3].inputs, sample_list[3].expected
-  perceptron.train sample_list[4].inputs, sample_list[4].expected
-  perceptron.train sample_list[5].inputs, sample_list[5].expected
-  perceptron.train sample_list[6].inputs, sample_list[6].expected
-  perceptron.train sample_list[7].inputs, sample_list[7].expected
-  perceptron.train sample_list[8].inputs, sample_list[8].expected
-  perceptron.train sample_list[9].inputs, sample_list[9].expected
-end
+puts perceptron.error_learn sample_list
+# perceptron.learn sample_list, 1500
 
 # вывод работы персептрона
 puts "*** Результат ***"

@@ -32,11 +32,10 @@ class Perceptron
 
   # вычисление ошибки
   def predict_error sample
-    outputs = put sample.inputs
+    actual = put sample.inputs
 
-    errors = sample.expected - outputs
+    errors = actual - sample.expected
     error = 0
-    puts errors
     errors.each do |e|
       error += e * e
     end
@@ -44,13 +43,19 @@ class Perceptron
   end
 
   # генетический алгоритм
+  def error_learn sample_list
+    error = 0
+    sample_list.each do |sample|
+      error += predict_error sample
+    end
+    error
+  end
 
 
   # обратное распространение ошибки
   def train inputs, expected
     actual = put inputs
     errors = actual - expected
-    # TODO: недоделан
     @layers.reverse_each do |layer|
       errors = foreach_all_neurons layer, errors
     end
@@ -58,15 +63,25 @@ class Perceptron
     errors.each do |error|
       e += error * error
     end
-    # puts e
+    e
   end
 
   def foreach_all_neurons layer, errors
     gradients = Mapper::derivative_bipolar layer.outputs
     delta_wights = Matrix.combine(errors, gradients) { |a, b| a * b }
 
-    layer.weights -= (delta_wights.t * layer.inputs * 0.05).t
+    layer.weights -= (delta_wights.t * layer.inputs * 0.015).t
     return delta_wights * layer.weights.t
+  end
+
+  def learn sample_list, epochs
+    for i in (0..epochs)
+      error = 0
+      sample_list.each do |sample|
+        error += train sample.inputs, sample.expected
+      end
+      puts "Ошибка[#{i}]: #{error}"
+    end
   end
 
 end
