@@ -7,7 +7,7 @@ class Layer
   attr_accessor :weights, :inputs, :outputs
 
   def initialize count_inputs, count_outputs
-    @weights = Matrix.build(count_inputs, count_outputs) { rand - 0.5 }
+    @weights = Matrix.build(count_inputs, count_outputs) { rand -1.0..1.0 }
   end
 
   def predict inputs

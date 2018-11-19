@@ -23,17 +23,18 @@ class Perceptron
   end
 
   def put inputs
+    signals = inputs
     @layers.each do |layer|
-      inputs = layer.predict inputs
+      signals = layer.predict signals
     end
-    inputs
+    signals
   end
 
   # вычисление ошибки
   def predict_error sample
     outputs = put sample.inputs
 
-    errors = (outputs - sample.expected)
+    errors = sample.expected - outputs
     error = 0
     puts errors
     errors.each do |e|
@@ -50,11 +51,20 @@ class Perceptron
     actual = put inputs
     errors = actual - expected
     # TODO: недоделан
+    @layers.reverse_each do |layer|
+      errors = foreach_all_neurons layer, errors
+    end
+    e = 0
+    errors.each do |error|
+      e += error * error
+    end
+    # puts e
   end
 
   def foreach_all_neurons layer, errors
     gradients = Mapper::derivative_bipolar layer.outputs
     delta_wights = Matrix.combine(errors, gradients) { |a, b| a * b }
+
     layer.weights -= (delta_wights.t * layer.inputs * 0.05).t
     return delta_wights * layer.weights.t
   end
