@@ -70,7 +70,7 @@ class Perceptron
     gradients = Mapper::derivative_bipolar layer.outputs
     delta_wights = Matrix.combine(errors, gradients) { |a, b| a * b }
 
-    layer.weights -= (delta_wights.t * layer.inputs * 0.015).t
+    layer.weights -= (delta_wights.t * layer.inputs * 0.025).t
     return delta_wights * layer.weights.t
   end
 
@@ -81,7 +81,24 @@ class Perceptron
         error += train sample.inputs, sample.expected
       end
       puts "Ошибка[#{i}]: #{error}"
+      break if error < 0.05
     end
+    ###########
+    max_weight = 0
+    min_weight = 9999
+    @layers.each do |layer|
+      layer.weights.each do |weight|
+        max_weight = weight if weight > max_weight
+        min_weight = weight if weight < min_weight
+      end
+    end
+    puts "Max weight = #{max_weight}"
+    puts "Min weight = #{min_weight}"
   end
 
 end
+
+# Ошибка[3145]: 0.00499903690043432
+# Ошибка[2684]: 0.004998276663751972
+# Ошибка[2367]: 0.004994315353362703
+#

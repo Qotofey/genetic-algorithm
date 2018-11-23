@@ -3,10 +3,19 @@ require 'matrix'
 require_relative 'model/perceptron'
 require_relative 'model/sample'
 require_relative 'model/mapper'
+require_relative 'model/genetic_algorithm'
 
 # инициализируем перцептрон
 perceptron = Perceptron.new 2
 perceptron.build 15, 10
+
+# инициализируем популяцию из 20 особей
+perceptrons = []
+for i in (0...20)
+  p = Perceptron.new 2
+  p.build 15, 10
+  perceptrons << p
+end
 
 # запоняем обучающую выборку
 sample_list = []
@@ -112,24 +121,42 @@ sample_list << Sample.new(
 
 # предварительное предсказание
 puts "*** Предсказание ***"
-puts perceptron.predict_error sample_list[0]
-puts perceptron.predict_error sample_list[1]
-puts perceptron.predict_error sample_list[2]
-puts perceptron.predict_error sample_list[3]
-puts perceptron.predict_error sample_list[4]
-puts perceptron.predict_error sample_list[5]
-puts perceptron.predict_error sample_list[6]
-puts perceptron.predict_error sample_list[7]
-puts perceptron.predict_error sample_list[8]
-puts perceptron.predict_error sample_list[9]
+puts perceptron.put sample_list[0].inputs
+puts perceptron.put sample_list[1].inputs
+puts perceptron.put sample_list[2].inputs
+puts perceptron.put sample_list[3].inputs
+puts perceptron.put sample_list[4].inputs
+puts perceptron.put sample_list[5].inputs
+puts perceptron.put sample_list[6].inputs
+puts perceptron.put sample_list[7].inputs
+puts perceptron.put sample_list[8].inputs
+puts perceptron.put sample_list[9].inputs
+# puts perceptron.predict_error sample_list[0]
+# puts perceptron.predict_error sample_list[1]
+# puts perceptron.predict_error sample_list[2]
+# puts perceptron.predict_error sample_list[3]
+# puts perceptron.predict_error sample_list[4]
+# puts perceptron.predict_error sample_list[5]
+# puts perceptron.predict_error sample_list[6]
+# puts perceptron.predict_error sample_list[7]
+# puts perceptron.predict_error sample_list[8]
+# puts perceptron.predict_error sample_list[9]
+
+# for i in (0...20)
+#   puts "##{i} - #{perceptrons[i].error_learn sample_list}"
+# end
+
+# genetic_algorithm = GeneticAlgorithm.new 20, sample_list
+# genetic_algorithm.predict
 
 # обучаем персептрон
 puts "*** Тренировка ***"
-puts perceptron.error_learn sample_list
-# perceptron.learn sample_list, 1500
+# genetic_algorithm.learn 1000
+
+perceptron.learn sample_list, 1500
 
 # вывод работы персептрона
-puts "*** Результат ***"
+puts "*** Результаты тестирования ***"
 puts perceptron.put sample_list[0].inputs
 puts perceptron.put sample_list[1].inputs
 puts perceptron.put sample_list[2].inputs
