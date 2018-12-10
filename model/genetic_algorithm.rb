@@ -34,6 +34,7 @@ class GeneticAlgorithm
         @new_individuals << crossbreeding(roulette_selection, roulette_selection)
       end
       # @new_individuals << mutation
+      mutation_weight
       to_power
     end
   end
@@ -68,22 +69,44 @@ class GeneticAlgorithm
     new_individual = Perceptron.new 2
     new_individual.build 15, 10
 
+    #находим точку разрыва
+    count_weights = 0
+    for i in 0...first_perceptron.count_layers
+      count_weights += first_perceptron.layers[i].weights.count
+    end
+
+    break_point = rand 0...count_weights #нашли точку разрыва
+
+    break_point_number_layer = 0 #слой в котором находится точка разрыва
+    puts break_point
+    first_perceptron.layers.each do |layer|
+      if break_point >= layer.weights.count
+        break_point -= (layer.weights.count - 1)
+        break_point_number_layer += 1
+      else
+        break
+      end
+    end
+
     for iter in (0...first_perceptron.count_layers)
       first_perceptron.layers[iter].weights.each_with_index do |weight, i, j|
 
-        if i % 2 == 0
+        k = first_perceptron.layers[iter].weights.row_count * i + j
+
+        if iter == break_point_number_layer && break_point <= k
           new_individual.layers[iter].weights.to_a[i][j] = weight
         else
           new_individual.layers[iter].weights.to_a[i][j] = second_perceptron.layers[iter].weights.to_a[i][j]
         end
-        # puts "weight[#{i}][#{j}] = #{new_individual.layers[iter].weights.to_a[i][j]}"
-
       end
     end
-    # for i in (0...@perceptrons[].size)
+
+    # for i in 0...first_perceptron.inputs
+    #   if input > 0
     #
+    #   end
     # end
-    # puts "# - #{new_individual.error_learn(@sample_list)} - #{100 / new_individual.error_learn(@sample_list)}"
+
     new_individual
   end
 
@@ -91,6 +114,18 @@ class GeneticAlgorithm
     p = Perceptron.new 2
     p.build 15, 10
     p
+  end
+
+  def mutation_weight
+    # pointer_perceptron = new_individuals[rand 0...20]
+    new_individuals.each do |pointer_perceptron|
+      count_layers = pointer_perceptron.count_layers
+      number_layer = rand 0...count_layers
+      pointer_weights = pointer_perceptron.layers[number_layer].weights
+      i = rand 0...pointer_weights.row_size
+      j = rand 0...pointer_weights.column_size
+      pointer_perceptron.layers[number_layer].weights.row(i).to_a[j] = rand -2.5...2.5
+    end
   end
 
   def to_power

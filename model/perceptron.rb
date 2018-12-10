@@ -85,7 +85,7 @@ class Perceptron
     end
     ###########
     max_weight = 0
-    min_weight = 9999
+    min_weight = Float::MAX
     @layers.each do |layer|
       layer.weights.each do |weight|
         max_weight = weight if weight > max_weight
@@ -97,8 +97,3 @@ class Perceptron
   end
 
 end
-
-# Ошибка[3145]: 0.00499903690043432
-# Ошибка[2684]: 0.004998276663751972
-# Ошибка[2367]: 0.004994315353362703
-#
