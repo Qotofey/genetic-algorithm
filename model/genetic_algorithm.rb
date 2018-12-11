@@ -20,18 +20,30 @@ class GeneticAlgorithm
     end
   end
 
+
   def predict
+
+    error_big = 0
     for i in (0...@size)
-      @errors << (100 / @perceptrons[i].error_learn(@sample_list)) ** 4
-      puts "##{i} - #{@perceptrons[i].error_learn @sample_list} - #{@errors[i]}"
+      # @errors << (100 / @perceptrons[i].error_learn(@sample_list)) ** 4
+      @errors << (1 / @perceptrons[i].error_learn(@sample_list))
+      # puts "##{i} - #{@perceptrons[i].error_learn @sample_list} - #{@errors[i]}"
+      error_big += @perceptrons[i].error_learn @sample_list
     end
+
+    puts "#{error_big}"
+
   end
 
   def learn epochs
     for iter in (0...epochs)
       predict
-      for i in (0...@size)
+      for i in (0...@size / 4)
         @new_individuals << crossbreeding(roulette_selection, roulette_selection)
+      end
+      for i in (@size / 4...@size)
+        # @new_individuals << crossbreeding(roulette_selection, roulette_selection)
+        @new_individuals << @perceptrons.sort_by { |val| val.error_learn(@sample_list)} .reverse[i]
       end
       # @new_individuals << mutation
       mutation_weight
@@ -61,7 +73,6 @@ class GeneticAlgorithm
   end
 
   def crossbreeding first_parent, second_parent
-    puts "#{first_parent} : #{second_parent}"
 
     first_perceptron = @perceptrons[first_parent]
     second_perceptron = @perceptrons[second_parent]
@@ -78,7 +89,7 @@ class GeneticAlgorithm
     break_point = rand 0...count_weights #нашли точку разрыва
 
     break_point_number_layer = 0 #слой в котором находится точка разрыва
-    puts break_point
+    # puts break_point
     first_perceptron.layers.each do |layer|
       if break_point >= layer.weights.count
         break_point -= (layer.weights.count - 1)
@@ -101,30 +112,48 @@ class GeneticAlgorithm
       end
     end
 
-    # for i in 0...first_perceptron.inputs
-    #   if input > 0
+    # for k in 0...first_perceptron.layers[0].inputs.column_size
+    #   if first_perceptron.layers[0].inputs.row(0)[k] > 0.5
+    #     first_perceptron.layers[0].weights.each_with_index do |weight, i, j|
+    #       if i == k
+    #         new_individual.layers[0].weights.to_a[i][j] = weight
+    #       else
+    #         new_individual.layers[0].weights.to_a[i][j] = second_perceptron.layers[0].weights.to_a[i][j]
+    #       end
+    #     end
+    #   end
+    # end
     #
+    # for k in 0...first_perceptron.layers[1].outputs.column_size
+    #   if first_perceptron.layers[1].outputs.row(0)[k] > 0.5
+    #     first_perceptron.layers[1].weights.each_with_index do |weight, i, j|
+    #       if j == k
+    #         new_individual.layers[1].weights.to_a[i][j] = weight
+    #       else
+    #         new_individual.layers[1].weights.to_a[i][j] = second_perceptron.layers[1].weights.to_a[i][j]
+    #       end
+    #     end
     #   end
     # end
 
     new_individual
   end
 
-  def mutation
-    p = Perceptron.new 2
-    p.build 15, 10
-    p
-  end
+  # def mutation
+  #   p = Perceptron.new 2
+  #   p.build 15, 10
+  #   p
+  # end
 
   def mutation_weight
-    # pointer_perceptron = new_individuals[rand 0...20]
+    # pointer_perceptron = new_individuals[rand 0...@size]
     new_individuals.each do |pointer_perceptron|
       count_layers = pointer_perceptron.count_layers
       number_layer = rand 0...count_layers
       pointer_weights = pointer_perceptron.layers[number_layer].weights
       i = rand 0...pointer_weights.row_size
       j = rand 0...pointer_weights.column_size
-      pointer_perceptron.layers[number_layer].weights.row(i).to_a[j] = rand -2.5...2.5
+      pointer_perceptron.layers[number_layer].weights.row(i).to_a[j] = rand -2.5..2.5
     end
   end
 

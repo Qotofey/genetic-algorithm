@@ -81,7 +81,7 @@ class Perceptron
         error += train sample.inputs, sample.expected
       end
       puts "Ошибка[#{i}]: #{error}"
-      break if error < 0.05
+      break if error < 500.05
     end
     ###########
     max_weight = 0
@@ -95,5 +95,7 @@ class Perceptron
     puts "Max weight = #{max_weight}"
     puts "Min weight = #{min_weight}"
   end
+
+
 
 end

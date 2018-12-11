@@ -132,7 +132,7 @@ puts perceptron.put sample_list[7].inputs
 puts perceptron.put sample_list[8].inputs
 puts perceptron.put sample_list[9].inputs
 
-genetic_algorithm = GeneticAlgorithm.new 20, sample_list
+genetic_algorithm = GeneticAlgorithm.new 800, sample_list
 genetic_algorithm.predict
 
 # обучаем персептрон
