@@ -53,24 +53,24 @@ class Perceptron
 
   # обратное распространение ошибки
   def train(inputs, expected)
-    actual = put inputs
+    actual = put(inputs)
     errors = actual - expected
     @layers.reverse_each do |layer|
       errors = foreach_all_neurons layer, errors
     end
-    e = 0
+    global_err = 0
     errors.each do |error|
-      e += error * error
+      global_err += error * error
     end
-    e
+    global_err
   end
 
   def foreach_all_neurons(layer, errors)
     gradients = Mapper.derivative_bipolar layer.outputs
-    delta_wights = Matrix.combine(errors, gradients) { |a, b| a * b }
+    delta_weights = Matrix.combine(errors, gradients) { |a, b| a * b }
 
-    layer.weights -= (delta_wights.t * layer.inputs * 0.025).t
-    delta_wights * layer.weights.t
+    layer.weights -= layer.inputs.t * delta_weights * 0.025
+    delta_weights * layer.weights.t
   end
 
   def learn(sample_list, epochs)
@@ -80,7 +80,7 @@ class Perceptron
         error += train sample.inputs, sample.expected
       end
       puts "Ошибка[#{i}]: #{error}"
-      break if error < 0.05
+      break if error < 0.3
     end
 
     max_weight = 0
