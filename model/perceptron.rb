@@ -1,28 +1,28 @@
+# frozen_string_literal: true
+
 require 'matrix'
 require_relative 'layer'
 require_relative 'mapper'
 
-
 class Perceptron
-
   attr_accessor :count_layers, :layers
 
-  def initialize count_layers
+  def initialize(count_layers)
     @count_layers = count_layers
   end
 
-  def build count_inputs, count_outputs
+  def build(count_inputs, count_outputs)
     @layers = []
-    for i in (0...@count_layers)
-      if i == @count_layers - 1
-        @layers << Layer.new(count_inputs, count_outputs)
-      else
-        @layers << Layer.new(count_inputs, count_inputs)
-      end
+    (0...@count_layers).each do |i|
+      @layers << if i == @count_layers - 1
+                   Layer.new(count_inputs, count_outputs)
+                 else
+                   Layer.new(count_inputs, count_inputs)
+                 end
     end
   end
 
-  def put inputs
+  def put(inputs)
     signals = inputs
     @layers.each do |layer|
       signals = layer.predict signals
@@ -31,7 +31,7 @@ class Perceptron
   end
 
   # вычисление ошибки
-  def predict_error sample
+  def predict_error(sample)
     actual = put sample.inputs
 
     errors = actual - sample.expected
@@ -43,7 +43,7 @@ class Perceptron
   end
 
   # генетический алгоритм
-  def error_learn sample_list
+  def error_learn(sample_list)
     error = 0
     sample_list.each do |sample|
       error += predict_error sample
@@ -51,9 +51,8 @@ class Perceptron
     error
   end
 
-
   # обратное распространение ошибки
-  def train inputs, expected
+  def train(inputs, expected)
     actual = put inputs
     errors = actual - expected
     @layers.reverse_each do |layer|
@@ -66,24 +65,24 @@ class Perceptron
     e
   end
 
-  def foreach_all_neurons layer, errors
-    gradients = Mapper::derivative_bipolar layer.outputs
+  def foreach_all_neurons(layer, errors)
+    gradients = Mapper.derivative_bipolar layer.outputs
     delta_wights = Matrix.combine(errors, gradients) { |a, b| a * b }
 
     layer.weights -= (delta_wights.t * layer.inputs * 0.025).t
-    return delta_wights * layer.weights.t
+    delta_wights * layer.weights.t
   end
 
-  def learn sample_list, epochs
-    for i in (0..epochs)
+  def learn(sample_list, epochs)
+    epochs.times do |i|
       error = 0
       sample_list.each do |sample|
         error += train sample.inputs, sample.expected
       end
       puts "Ошибка[#{i}]: #{error}"
-      break if error < 500.05
+      break if error < 0.05
     end
-    ###########
+
     max_weight = 0
     min_weight = Float::MAX
     @layers.each do |layer|
@@ -95,7 +94,4 @@ class Perceptron
     puts "Max weight = #{max_weight}"
     puts "Min weight = #{min_weight}"
   end
-
-
-
 end

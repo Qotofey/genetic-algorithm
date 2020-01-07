@@ -1,25 +1,25 @@
+# frozen_string_literal: true
+
 require 'matrix'
 
 class Mapper
-
-  def self.bipolar matrix
-    m = matrix.map { |value| num_bipolar value }
+  def self.bipolar(matrix)
+    matrix.map { |value| num_bipolar value }
   end
 
-  def self.derivative_bipolar matrix
-    m = matrix.map { |value| num_derivative_bipolar value }
+  def self.derivative_bipolar(matrix)
+    matrix.map { |value| num_derivative_bipolar value }
   end
 
-  def self.sigmoid matrix
-    m = matrix.map { |value| num_sigmoid value }
+  def self.sigmoid(matrix)
+    matrix.map { |value| num_sigmoid value }
   end
 
-  def self.derivative_sigmoid matrix
-    m = matrix.map { |value| num_derivative_sigmoid value }
+  def self.derivative_sigmoid(matrix)
+    matrix.map { |value| num_derivative_sigmoid value }
   end
 
-
-  def self.result_print matrix, num
+  def self.result_print(matrix, num)
     puts "Анализ: #{num}"
     i = 0
     matrix.each do |value|
@@ -28,7 +28,7 @@ class Mapper
     end
   end
 
-  def self.charecter_print matrix, num
+  def self.charecter_print(matrix, num)
     print "Число: #{num}; "
     i = 0
     big_val = 0
@@ -43,22 +43,23 @@ class Mapper
     puts "распознан символ: #{big_index}; уверенность: #{(big_val * 100).round}%"
   end
 
-  private
+  class << self
+    private
 
-  def self.num_bipolar x
-    y = Math::tanh x
+    def num_bipolar(value)
+      Math.tanh(value)
+    end
+
+    def num_derivative_bipolar(value)
+      1 / (Math.cosh(value)**2)
+    end
+
+    def num_sigmoid(value)
+      1 / (1 + Math.exp(-value))
+    end
+
+    def num_derivative_sigmoid(value)
+      num_sigmoid(value) * (1 - num_sigmoid(value))
+    end
   end
-
-  def self.num_derivative_bipolar x
-    y = 1 / (Math::cosh(x) ** 2)
-  end
-
-  def self.num_sigmoid x
-    y = 1 / (1 + Math::exp(-x))
-  end
-
-  def self.num_derivative_sigmoid x
-    y = num_sigmoid(x) * (1 - num_sigmoid(x))
-  end
-
 end
