@@ -19,6 +19,14 @@ class Mapper
     matrix.map { |value| num_derivative_sigmoid value }
   end
 
+  def self.relu(matrix)
+    matrix.map { |value| num_relu value }
+  end
+
+  def self.derivative_relu(matrix)
+    matrix.map { |value| num_derivative_relu value }
+  end
+
   def self.result_print(matrix, num)
     puts "Анализ: #{num}"
     i = 0
@@ -60,6 +68,18 @@ class Mapper
 
     def num_derivative_sigmoid(value)
       num_sigmoid(value) * (1 - num_sigmoid(value))
+    end
+
+    def num_relu(value)
+      return 0 if value.negative?
+
+      value
+    end
+
+    def num_derivative_relu(value)
+      return 0 if value.negative?
+
+      1
     end
   end
 end

@@ -1,9 +1,6 @@
 AllCops:
   Exclude:
-    - 'bin/**/*'
-    - 'db/**/*'
-    - 'spec/**/*'
-    - 'config/spring.rb'
+    - 'model/genetic_algorithm.rb'
 
 Style/Documentation:
   Enabled: false
