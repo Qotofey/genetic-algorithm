@@ -13,7 +13,7 @@ class Layer
 
   def predict(inputs)
     @inputs = inputs
-    @outputs = Mapper.bipolar(@inputs * @weights)
+    @outputs = Mapper.relu(@inputs * @weights)
   end
 
   def print_to_console

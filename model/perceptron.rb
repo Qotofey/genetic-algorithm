@@ -66,10 +66,10 @@ class Perceptron
   end
 
   def foreach_all_neurons(layer, errors)
-    gradients = Mapper.derivative_bipolar layer.outputs
+    gradients = Mapper.derivative_relu layer.outputs
     delta_weights = Matrix.combine(errors, gradients) { |a, b| a * b }
 
-    layer.weights -= layer.inputs.t * delta_weights * 0.025
+    layer.weights -= layer.inputs.t * delta_weights * 0.0125
     delta_weights * layer.weights.t
   end
 

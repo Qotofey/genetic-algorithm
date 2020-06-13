@@ -70,10 +70,10 @@ class Mapper
       num_sigmoid(value) * (1 - num_sigmoid(value))
     end
 
-    def num_relu(value)
+    def num_relu(value, k = 1.0)
       return 0 if value.negative?
 
-      value
+      value * k
     end
 
     def num_derivative_relu(value)
